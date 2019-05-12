@@ -1,0 +1,24 @@
+checkST
+minST
+maxST
+sizeST
+rankST vitorias
+rankST alfabetizar
+delminST
+minST
+delmaxST
+maxST
+keysST
+getST tentei
+deleteST universidade
+checkST
+getST universidade
+deleteST tentei
+checkST
+deleteST tudo
+sizeST
+deleteST vida
+deleteST as
+deleteST autonomamente
+checkST
+keysST
