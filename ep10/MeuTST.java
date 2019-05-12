@@ -276,7 +276,12 @@ public class MeuTST<Value extends Comparable<Value>> {
 
         for(int i = 0; i < size; i++){
             String key = keysQueue.dequeue();
-            pairsArray[i] = new KeyVal(key, (Long)get(key));
+            Value value = get(key);
+            if(value instanceof Long){
+                pairsArray[i] = new KeyVal(key, (Long)get(key));
+            } else if(value instanceof Integer){
+                pairsArray[i] = new KeyVal(key, (Integer)get(key));
+            }
         }
         // invariante: pairsArray contém objetos do tipo keyVal com todas
         // as keys do keyWithPrefix e seus valores associados.
@@ -296,7 +301,7 @@ public class MeuTST<Value extends Comparable<Value>> {
             // invariante: pairsArray[chosenIndex].key é a string com
             // maior valor que ainda não foi adicionada à queue final
 
-            if(maxVal != -1){
+            if(maxVal != -1 && size > 0){
                 orderedQueue.enqueue(pairsArray[chosenIndex].key);
                 pairsArray[chosenIndex].val = -1;
                 maxVal = Long.MIN_VALUE;
@@ -377,7 +382,7 @@ public class MeuTST<Value extends Comparable<Value>> {
     public static void main(String[] args) {
 
         // build symbol table from standard input
-        MeuTST<Long> st = new MeuTST<Long>();
+        MeuTST<Long> st = new MeuTST<>();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -391,13 +396,17 @@ public class MeuTST<Value extends Comparable<Value>> {
 
         scanner.close();
 
-        StdOut.println("keysWithPrefix(\"all\"):");
-        for (String s : st.keysWithPrefix("all"))
-            StdOut.println(s);
+        StdOut.println("keysWithPrefix(\"Seo\"):");
+        for (String s : st.keysWithPrefix("Seo"))
+            StdOut.println(s + " : " + st.get(s));
 
-        StdOut.println("keysWithPrefixByValue(\"all\"):");
-        for (String s : st.keysWithPrefixByValue("all"))
-            StdOut.println(s);
+        StdOut.println();
+        StdOut.println();
+        StdOut.println();
+
+        StdOut.println("keysWithPrefixByValue(\"Seo\"):");
+        for (String s : st.keysWithPrefixByValue("Seo"))
+            StdOut.println(s + " : " + st.get(s));
         StdOut.println();
     }
 }
