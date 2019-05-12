@@ -1,0 +1,198 @@
+/****************************************************************
+    Nome: Eduardo Yukio Rodrigues
+    NUSP: 8988702
+
+    Ao preencher esse cabeçalho com o meu nome e o meu número USP,
+    declaro que todas as partes originais desse exercício programa (EP)
+    foram desenvolvidas e implementadas por mim e que portanto não 
+    constituem desonestidade acadêmica ou plágio.
+    Declaro também que sou responsável por todas as cópias desse
+    programa e que não distribui ou facilitei a sua distribuição.
+    Estou ciente que os casos de plágio e desonestidade acadêmica
+    serão tratados segundo os critérios divulgados na página da 
+    disciplina.
+    Entendo que EPs sem assinatura devem receber nota zero e, ainda
+    assim, poderão ser punidos por desonestidade acadêmica.
+
+    Abaixo descreva qualquer ajuda que você recebeu para fazer este
+    EP.  Inclua qualquer ajuda recebida por pessoas (inclusive
+    monitoras e colegas). Com exceção de material de MAC0323, caso
+    você tenha utilizado alguma informação, trecho de código,...
+    indique esse fato abaixo para que o seu programa não seja
+    considerado plágio ou irregular.
+
+    Exemplo:
+
+        A monitora me explicou que eu devia utilizar a função xyz().
+
+        O meu método xyz() foi baseada na descrição encontrada na 
+        página https://www.ime.usp.br/~pf/algoritmos/aulas/enumeracao.html.
+
+    Descrição de ajuda ou indicação de fonte:
+        -Função que ordena string:
+            https://www.geeksforgeeks.org/sort-a-string-in-java-2-different-ways/
+
+        -Receita para construir uma classe iterável:
+            https://www.ime.usp.br/~coelho/mac0323-2019/aulas/aula01/slides.pdf
+
+
+    Se for o caso, descreva a seguir 'bugs' e limitações do seu programa:
+
+****************************************************************/
+
+// excessões pedidas
+import java.lang.IllegalArgumentException;
+import java.lang.UnsupportedOperationException;
+import java.util.NoSuchElementException;
+import java.util.*;
+
+// pode ser útil
+import java.util.Arrays; // Arrays.sort(), Arrays.copyOf(), ...
+
+import java.util.Iterator; // passo 0 para criarmos um iterador
+
+import edu.princeton.cs.algs4.StdOut;
+
+public class Arrangements implements Iterable<String> {
+    // construtor
+    private Arrangements(String s) {
+        if(s == null){
+            throw new IllegalArgumentException();
+        }
+        String sortedString = sortString(s);
+        perm1(sortedString);
+
+        for (Object arranjo: auxiliaryStructure) {
+            add(arranjo.toString());
+        }
+    }
+
+    // representa um nó de uma lista ligada
+    private static class Node{
+        String data;
+        Node nextNode;
+
+        private Node(String data){
+            this.data = data;
+        }
+    }
+    private static Node head = new Node(null);
+    private static Node tail = null;
+
+    private static void add (String data){
+        Node node = new Node(data);
+
+        if(tail == null){
+            tail = node;
+            head.nextNode = tail;
+        }
+        else{
+            tail.nextNode = node;
+            tail = node;
+        }
+    }
+
+    private static boolean contains (String data){
+        Node currentNode = head.nextNode;
+
+        while(currentNode != null){
+            if(currentNode.data.equals(data)){
+                return true;
+            }
+            currentNode = currentNode.nextNode;
+        }
+
+        return false;
+    }
+
+    private static String sortString(String inputString){
+        char[] tempArray = inputString.toCharArray();
+        Arrays.sort(tempArray);
+        return new String(tempArray);
+    }
+
+    private static Set auxiliaryStructure = new LinkedHashSet<String>();
+    private static void perm1(String s) { perm1("", s); }
+    private static void perm1(String prefix, String s) {
+        int len = s.length();
+        if (len == 0) {
+            StdOut.println(prefix);
+            auxiliaryStructure.add(prefix);
+        }
+        else {
+            for (int i = 0; i < len; i++)
+                perm1(prefix + s.charAt(i), s.substring(0, i) + s.substring(i+1, len));
+        }
+
+    }
+
+    // iterador de arranjos da string s
+    public Iterator<String> iterator() {
+        return new ArrangementIterator();
+    }
+
+    private class ArrangementIterator implements Iterator<String>{
+        private Node current = head;
+
+        public boolean hasNext(){
+            return current.nextNode != null;
+        }
+
+        public String next(){
+            if(current.nextNode == null){
+                throw new NoSuchElementException();
+            }
+
+            current = current.nextNode;
+            return current.data;
+        }
+
+        public void remove(){
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    /**
+     * Swap Characters at position 
+     * @param a string value 
+     * @param i position 1 
+     * @param j position 2 
+     * @return swapped string 
+     */
+    public String swap(String a, int i, int j)
+    {
+        char temp;
+        char[] charArray = a.toCharArray();
+        temp = charArray[i];
+        charArray[i] = charArray[j];
+        charArray[j] = temp;
+        return String.valueOf(charArray);
+    }
+    
+    // Unit test
+    public static void main(String[] args) {
+        long startTime = System.nanoTime();
+
+        String s = args[0];
+        Arrangements arr = new Arrangements(s);
+        
+        StdOut.println("Teste 1: imprime no máximo os 10 primeiros arranjos");
+        Iterator<String> it = arr.iterator();
+        for (int i = 0; it.hasNext() && i < 10; i++) {
+            StdOut.println(i + " : " + it.next());
+        }
+        
+        StdOut.println("Teste 2: imprime todos os arranjos");
+        int i = 0;
+        for (String arranjo: arr) {
+            StdOut.println(i + " : " + arranjo);
+            i++;
+        }
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000;
+
+        StdOut.println("\nTempo decorrido em ms: " + duration);
+    }
+}
