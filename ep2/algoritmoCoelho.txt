@@ -1,0 +1,76 @@
+CRIAR VETOR EM QUE EU GUARDO O TAMANHO DA MAIOR SUBSEQUENCIA QUE ACABA NAQUELA LETRA
+
+DENTRO DO ALGORITMO QUE MONTA A PERMUTAÇÃO:
+
+SEMPRE QUE EU ADICIONO UMA LETRA NESSA NOVA PERMUTAÇÃO,
+
+EU VOLTO NA ARRAY DE STRING PROCURANDO UMA LETRA MENOR
+	ENTRE AS LETRAS MENORES, EU PROCURO A QUE TEM O MAIOR NÚMERO CORRESPONDENTE NA ARRAY
+
+	QUANDO EU ACHAR, SOMO 1 E GUARDO NA ARRAY NO ÍNDICE DESSA NOVA LETRA
+
+SE ESSE NUMERO FOR MAIOR QUE S, RETURN
+
+SENÃO, CONTINUA
+
+SE ACABAR A STRING, PRINTA
+
+MESMA PARADA PRA DECRESCENTE (MUDA S POR T, E ENTRE AS LETRAS MENORES PRA ENTRE AS LETRAS MAIORES)
+
+Ex:
+
+uma das permutações que está sendo gerada:
+axybcdefghij
+
+s = 3
+t = 4
+
+
+ a  x  y  b  c  d  e  ...
+[0][0][0][0][0][0][0] ...
+[1][0][0][0][0][0][0] ...
+[1][2][0][0][0][0][0] ...
+[1][2][3][0][0][0][0] ...
+[1][2][3][2][0][0][0] ...
+[1][2][3][2][3][0][0] ...
+[1][2][3][2][3][4][0] ...
+
+a: maior substring "a", tamanho 1, põe na array no índice do "a"
+
+adiciona x
+
+entre as letras anteriores menores que "x", o "a" é a que tem maior número na array: 1
+soma 1 (vira 2), põe na array no índice do "x"
+maior substring: "ax"
+
+adiciona y
+
+entre as letras anteriores menores que "y", o "x" é a que tem maior número na array: 2
+soma 1 (vira 3), põe na array no índice do "y"
+maior substring: "axy"
+
+adiciona b
+
+entre as letras anteriores menores que "b", o "a" é a que tem maior número na array: 1
+soma 1 (vira 2), põe na array no índice do "b"
+maior substring: "ab"
+
+adiciona c
+
+entre as letras anteriores menores que "c", o "b" é a que tem maior número na array: 2
+soma 1 (vira 3), põe na array no índice do "c"
+maior substring: "abc"
+
+adiciona d
+
+entre as letras anteriores menores que "d", o "c" é a que tem maior número na array: 3
+soma 1 (vira 4), põe na array no índice do "d"
+maior substring: "abcd"
+
+opa, como "abcd" tem número 4 na array e 4 > s(s == 3), então nem precisa continuar gerando a permutação "axybcdefghij", pq já sabemos que ela tem uma subsequência crescente com tamanho maior que s ("abcd"), então retorna, parte pra próxima permutação
+
+
+
+
+
+
