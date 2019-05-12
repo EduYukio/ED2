@@ -1,0 +1,12 @@
+sizeST
+minST
+maxST
+delminST
+minST
+getST liberty
+getST all
+getST equal
+showST
+keysST
+sizeST
+rankST with
