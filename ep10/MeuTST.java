@@ -368,9 +368,66 @@ public class MeuTST<Value extends Comparable<Value>> {
      * inspiração.
      */
     public void delete(String key) {
-        // TAREFA
-        if (key == null)
-            throw new NullPointerException("delete(): argument key is null");
+        if (key == null) throw new IllegalArgumentException("argument to delete() is null");
+
+        if(!contains(key)) return;
+
+        root = delete(root, key, 0);
+    }
+
+    private Node<Value> delete(Node<Value> x, String key, int d) {
+        // if (x == null) return null;
+
+        char c = key.charAt(d);
+        if      (c < x.c)               x.left  = delete(x.left,  key, d);
+        else if (c > x.c)               x.right = delete(x.right, key, d);
+
+        // letra deu match, mas string ainda nao terminou
+        else if (d < key.length() - 1)  x.mid   = delete(x.mid,   key, d+1);
+        // letra deu match e string terminou
+        // nao tem filhos, entao nenhuma string depende dessa
+        // podemos exclui-la
+
+//        if(deleteNodes){
+//            if((x.left != null && x.mid != null && x.right != null)){
+//                //deleteNodes = false;
+//                return x;
+//            }
+//        }
+
+        if(hasChild(x) || (isEndOfSomeString(x) && !isEndOfDeletingString(key, d))){
+            if(isEndOfDeletingString(key,d)){
+                x.val = null;
+            }
+            return x;
+        }
+
+        return null;
+
+
+        // parte que lida com nós intermediários
+        // se ainda tiver excluindo a string, vai retornando null
+        // quando excluir a string inteira, c vai ser diferente de x.c
+        // aí para de retornar null
+
+//        if(deleteNodes && c == x.c){
+//            return null;
+//        }
+//
+//        deleteNodes = false;
+//        return x;
+    }
+
+    private boolean hasChild(Node<Value> x){
+        return x.left != null || x.mid != null || x.right != null;
+    }
+
+    private boolean isEndOfSomeString(Node<Value> x){
+        return x.val != null;
+    }
+
+    private boolean isEndOfDeletingString(String key, int d){
+        return d == key.length() - 1;
     }
 
     
