@@ -1,0 +1,6 @@
+5
+    1	bau
+    2	cat
+    3	cats
+    4	cup
+    5	up
