@@ -249,78 +249,42 @@ public class MeuTST<Value extends Comparable<Value>> {
 
 
     /**
-     *  TAREFA: keysWithPrefixByValue():
-     * 
-     *  Cria e retorna uma coleção iterável de strings.
-     *
-     *  A coleção deve conter as strings que tem 'prefix' como 
-     *  prefixo. Além disso os strings na coleção devem estar 
-     *  em ordem decrescente de valor (val). 
-     * 
-     *  Sinta-se a vontade para: 
-     *
-     *     - criar métodos auxiliares; 
-     *     - criar classes auxiliares; e
-     *     - usar classes do algs4, e nesse caso não deixe 
-     *       de colocar o import correspondente.
-     *
+     * TAREFA: keysWithPrefixByValue():
+     * <p>
+     * Cria e retorna uma coleção iterável de strings.
+     * <p>
+     * A coleção deve conter as strings que tem 'prefix' como
+     * prefixo. Além disso os strings na coleção devem estar
+     * em ordem decrescente de valor (val).
+     * <p>
+     * Sinta-se a vontade para:
+     * <p>
+     * - criar métodos auxiliares;
+     * - criar classes auxiliares; e
+     * - usar classes do algs4, e nesse caso não deixe
+     * de colocar o import correspondente.
      */
     // all keys starting with given prefix
     public Iterable<String> keysWithPrefixByValue(String prefix) {
-        Queue<String> keysQueue = (Queue<String>)keysWithPrefix(prefix);
+        Queue<String> keysQueue = (Queue<String>) keysWithPrefix(prefix);
+        List<String> keysList = new ArrayList<>();
 
         int size = keysQueue.size();
-        KeyVal[] pairsArray = new KeyVal[size];
-
-        for(int i = 0; i < size; i++){
-            String key = keysQueue.dequeue();
-            Value value = get(key);
-            if(value instanceof Long){
-                pairsArray[i] = new KeyVal(key, (Long)get(key));
-            } else if(value instanceof Integer){
-                pairsArray[i] = new KeyVal(key, (Integer)get(key));
-            }
+        for (int i = 0; i < size; i++) {
+            keysList.add(keysQueue.dequeue());
         }
-        // invariante: pairsArray contém objetos do tipo keyVal com todas
-        // as keys do keyWithPrefix e seus valores associados.
 
-        Queue<String> orderedQueue = new Queue<>();
-
-        long maxVal = Long.MIN_VALUE;
-        int chosenIndex = -1;
-
-        while(true){
-            for(int i = 0; i < size; i++){
-                if(pairsArray[i].val > maxVal){
-                    maxVal = pairsArray[i].val;
-                    chosenIndex = i;
-                }
-            }
-            // invariante: pairsArray[chosenIndex].key é a string com
-            // maior valor que ainda não foi adicionada à queue final
-
-            if(maxVal != -1 && size > 0){
-                orderedQueue.enqueue(pairsArray[chosenIndex].key);
-                pairsArray[chosenIndex].val = -1;
-                maxVal = Long.MIN_VALUE;
-                chosenIndex = -1;
-            } else{
-                break;
-            }
-        }
-        // invariante: todas as strings foram adicionadas à queue
-        // final na ordem decrescente
-
-        return orderedQueue;
+        Collections.sort(keysList, new SortStringsByValue());
+        return keysList;
     }
-     
-    
+
+
     // all keys in subtrie rooted at x with given prefix
     private void collect(Node<Value> x, StringBuilder prefix, Queue<String> queue) {
         if (x == null) return;
-        collect(x.left,  prefix, queue);
+        collect(x.left, prefix, queue);
         if (x.val != null) queue.enqueue(prefix.toString() + x.c);
-        collect(x.mid,   prefix.append(x.c), queue);
+        collect(x.mid, prefix.append(x.c), queue);
         prefix.deleteCharAt(prefix.length() - 1);
         collect(x.right, prefix, queue);
     }
@@ -328,16 +292,17 @@ public class MeuTST<Value extends Comparable<Value>> {
     /**
      * Returns all of the keys in the symbol table that match {@code pattern},
      * where . symbol is treated as a wildcard character.
+     *
      * @param pattern the pattern
      * @return all of the keys in the symbol table that match {@code pattern},
-     *     as an iterable, where . is treated as a wildcard character.
+     * as an iterable, where . is treated as a wildcard character.
      */
     public Iterable<String> keysThatMatch(String pattern) {
         Queue<String> queue = new Queue<String>();
         collect(root, new StringBuilder(), 0, pattern, queue);
         return queue;
     }
- 
+
     private void collect(Node<Value> x, StringBuilder prefix, int i, String pattern, Queue<String> queue) {
         if (x == null) return;
         char c = pattern.charAt(i);
