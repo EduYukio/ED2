@@ -1,40 +1,39 @@
 /****************************************************************
-    Nome: Eduardo Yukio Rodrigues
-    NUSP: 8988702
+ Nome: Eduardo Yukio Rodrigues
+ NUSP: 8988702
 
-    Ao preencher esse cabeçalho com o meu nome e o meu número USP,
-    declaro que todas as partes originais desse exercício programa (EP)
-    foram desenvolvidas e implementadas por mim e que portanto não 
-    constituem desonestidade acadêmica ou plágio.
-    Declaro também que sou responsável por todas as cópias desse
-    programa e que não distribui ou facilitei a sua distribuição.
-    Estou ciente que os casos de plágio e desonestidade acadêmica
-    serão tratados segundo os critérios divulgados na página da 
-    disciplina.
-    Entendo que EPs sem assinatura devem receber nota zero e, ainda
-    assim, poderão ser punidos por desonestidade acadêmica.
+ Ao preencher esse cabeçalho com o meu nome e o meu número USP,
+ declaro que todas as partes originais desse exercício programa (EP)
+ foram desenvolvidas e implementadas por mim e que portanto não
+ constituem desonestidade acadêmica ou plágio.
+ Declaro também que sou responsável por todas as cópias desse
+ programa e que não distribui ou facilitei a sua distribuição.
+ Estou ciente que os casos de plágio e desonestidade acadêmica
+ serão tratados segundo os critérios divulgados na página da
+ disciplina.
+ Entendo que EPs sem assinatura devem receber nota zero e, ainda
+ assim, poderão ser punidos por desonestidade acadêmica.
 
-    Abaixo descreva qualquer ajuda que você recebeu para fazer este
-    EP.  Inclua qualquer ajuda recebida por pessoas (inclusive
-    monitoras e colegas). Com exceção de material de MAC0323, caso
-    você tenha utilizado alguma informação, trecho de código,...
-    indique esse fato abaixo para que o seu programa não seja
-    considerado plágio ou irregular.
+ Abaixo descreva qualquer ajuda que você recebeu para fazer este
+ EP.  Inclua qualquer ajuda recebida por pessoas (inclusive
+ monitoras e colegas). Com exceção de material de MAC0323, caso
+ você tenha utilizado alguma informação, trecho de código,...
+ indique esse fato abaixo para que o seu programa não seja
+ considerado plágio ou irregular.
 
-    Exemplo:
+ Exemplo:
 
-        A monitora me explicou que eu devia utilizar a função xyz().
+ A monitora me explicou que eu devia utilizar a função xyz().
 
-        O meu método xyz() foi baseada na descrição encontrada na 
-        página https://www.ime.usp.br/~pf/algoritmos/aulas/enumeracao.html.
+ O meu método xyz() foi baseada na descrição encontrada na
+ página https://www.ime.usp.br/~pf/algoritmos/aulas/enumeracao.html.
 
-    Descrição de ajuda ou indicação de fonte:
+ Descrição de ajuda ou indicação de fonte:
 
 
 
-    Se for o caso, descreva a seguir 'bugs' e limitações do seu programa:
-
-****************************************************************/
+ Se for o caso, descreva a seguir 'bugs' e limitações do seu programa:
+ ****************************************************************/
 
 /*************************************************************************
  *  Compilation:  javac MeuTST.java
@@ -50,38 +49,37 @@
  *************************************************************************/
 
 // Todos os includes a seguir são devidos a tarefa de MAC0323
-import edu.princeton.cs.algs4.StdIn;
+
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.In;
-import java.util.Comparator;
-import java.util.Scanner;
+
+import java.util.*;
 
 /**
- *  The {@code TST} class represents an symbol table of key-value
- *  pairs, with string keys and generic values.
- *  It supports the usual <em>put</em>, <em>get</em>, <em>contains</em>,
- *  <em>delete</em>, <em>size</em>, and <em>is-empty</em> methods.
- *  It also provides character-based methods for finding the string
- *  in the symbol table that is the <em>longest prefix</em> of a given prefix,
- *  finding all strings in the symbol table that <em>start with</em> a given prefix,
- *  and finding all strings in the symbol table that <em>match</em> a given pattern.
- *  A symbol table implements the <em>associative array</em> abstraction:
- *  when associating a value with a key that is already in the symbol table,
- *  the convention is to replace the old value with the new value.
- *  Unlike {@link java.util.Map}, this class uses the convention that
- *  values cannot be {@code null}—setting the
- *  value associated with a key to {@code null} is equivalent to deleting the key
- *  from the symbol table.
- *  <p>
- *  This implementation uses a ternary search trie.
- *  <p>
- *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/52trie">Section 5.2</a> of
- *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+ * The {@code TST} class represents an symbol table of key-value
+ * pairs, with string keys and generic values.
+ * It supports the usual <em>put</em>, <em>get</em>, <em>contains</em>,
+ * <em>delete</em>, <em>size</em>, and <em>is-empty</em> methods.
+ * It also provides character-based methods for finding the string
+ * in the symbol table that is the <em>longest prefix</em> of a given prefix,
+ * finding all strings in the symbol table that <em>start with</em> a given prefix,
+ * and finding all strings in the symbol table that <em>match</em> a given pattern.
+ * A symbol table implements the <em>associative array</em> abstraction:
+ * when associating a value with a key that is already in the symbol table,
+ * the convention is to replace the old value with the new value.
+ * Unlike {@link java.util.Map}, this class uses the convention that
+ * values cannot be {@code null}—setting the
+ * value associated with a key to {@code null} is equivalent to deleting the key
+ * from the symbol table.
+ * <p>
+ * This implementation uses a ternary search trie.
+ * <p>
+ * For additional documentation, see <a href="http://algs4.cs.princeton.edu/52trie">Section 5.2</a> of
+ * <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
 // public class TST<Value> { MAC0323
 public class MeuTST<Value extends Comparable<Value>> {
-    
+
     private int n;              // size
     private Node<Value> root;   // root of TST
 
@@ -107,6 +105,7 @@ public class MeuTST<Value extends Comparable<Value>> {
 
     /**
      * Returns the number of key-value pairs in this symbol table.
+     *
      * @return the number of key-value pairs in this symbol table
      */
     public int size() {
@@ -115,9 +114,10 @@ public class MeuTST<Value extends Comparable<Value>> {
 
     /**
      * Does this symbol table contain the given key?
+     *
      * @param key the key
      * @return {@code true} if this symbol table contains {@code key} and
-     *     {@code false} otherwise
+     * {@code false} otherwise
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public boolean contains(String key) {
@@ -129,9 +129,10 @@ public class MeuTST<Value extends Comparable<Value>> {
 
     /**
      * Returns the value associated with the given key.
+     *
      * @param key the key
      * @return the value associated with the given key if the key is in the symbol table
-     *     and {@code null} if the key is not in the symbol table
+     * and {@code null} if the key is not in the symbol table
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public Value get(String key) {
@@ -149,27 +150,28 @@ public class MeuTST<Value extends Comparable<Value>> {
         if (x == null) return null;
         if (key.length() == 0) throw new IllegalArgumentException("key must have length >= 1");
         char c = key.charAt(d);
-        if      (c < x.c)              return get(x.left,  key, d);
-        else if (c > x.c)              return get(x.right, key, d);
-        else if (d < key.length() - 1) return get(x.mid,   key, d+1);
-        else                           return x;
+        if (c < x.c) return get(x.left, key, d);
+        else if (c > x.c) return get(x.right, key, d);
+        else if (d < key.length() - 1) return get(x.mid, key, d + 1);
+        else return x;
     }
 
     /**
      * Inserts the key-value pair into the symbol table, overwriting the old value
      * with the new value if the key is already in the symbol table.
      * If the value is {@code null}, this effectively deletes the key from the symbol table.
+     *
      * @param key the key
      * @param val the value
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public void put(String key, Value val) {
         if (key == null) {
-            throw new IllegalArgumentException("calls put() with null key"); 
+            throw new IllegalArgumentException("calls put() with null key");
         }
         if (val == null) {
             delete(key);
-        }    
+        }
         if (!contains(key)) n++;
         root = put(root, key, val, 0);
     }
@@ -180,19 +182,20 @@ public class MeuTST<Value extends Comparable<Value>> {
             x = new Node<Value>();
             x.c = c;
         }
-        if      (c < x.c)               x.left  = put(x.left,  key, val, d);
-        else if (c > x.c)               x.right = put(x.right, key, val, d);
-        else if (d < key.length() - 1)  x.mid   = put(x.mid,   key, val, d+1);
-        else                            x.val   = val;
+        if (c < x.c) x.left = put(x.left, key, val, d);
+        else if (c > x.c) x.right = put(x.right, key, val, d);
+        else if (d < key.length() - 1) x.mid = put(x.mid, key, val, d + 1);
+        else x.val = val;
         return x;
     }
 
     /**
      * Returns the string in the symbol table that is the longest prefix of {@code query},
      * or {@code null}, if no such string.
+     *
      * @param query the query string
      * @return the string in the symbol table that is the longest prefix of {@code query},
-     *     or {@code null} if no such string
+     * or {@code null} if no such string
      * @throws IllegalArgumentException if {@code query} is {@code null}
      */
     public String longestPrefixOf(String query) {
@@ -205,7 +208,7 @@ public class MeuTST<Value extends Comparable<Value>> {
         int i = 0;
         while (x != null && i < query.length()) {
             char c = query.charAt(i);
-            if      (c < x.c) x = x.left;
+            if (c < x.c) x = x.left;
             else if (c > x.c) x = x.right;
             else {
                 i++;
@@ -220,6 +223,7 @@ public class MeuTST<Value extends Comparable<Value>> {
      * Returns all keys in the symbol table as an {@code Iterable}.
      * To iterate over all of the keys in the symbol table named {@code st},
      * use the foreach notation: {@code for (Key key : st.keys())}.
+     *
      * @return all keys in the symbol table as an {@code Iterable}
      */
     public Iterable<String> keys() {
@@ -230,9 +234,10 @@ public class MeuTST<Value extends Comparable<Value>> {
 
     /**
      * Returns all of the keys in the set that start with {@code prefix}.
+     *
      * @param prefix the prefix
      * @return all of the keys in the set that start with {@code prefix},
-     *     as an iterable
+     * as an iterable
      * @throws IllegalArgumentException if {@code prefix} is {@code null}
      */
     public Iterable<String> keysWithPrefix(String prefix) {
@@ -310,7 +315,7 @@ public class MeuTST<Value extends Comparable<Value>> {
         if (c == '.' || c == x.c) {
             if (i == pattern.length() - 1 && x.val != null) queue.enqueue(prefix.toString() + x.c);
             if (i < pattern.length() - 1) {
-                collect(x.mid, prefix.append(x.c), i+1, pattern, queue);
+                collect(x.mid, prefix.append(x.c), i + 1, pattern, queue);
                 prefix.deleteCharAt(prefix.length() - 1);
             }
         }
@@ -368,40 +373,99 @@ public class MeuTST<Value extends Comparable<Value>> {
         return d == key.length() - 1;
     }
 
-    
-    /**
-     * Unit tests the {@code TST} data type.
-     *
-     * @param args the command-line arguments
-     */
-    public static void main(String[] args) {
+    private void printKeys(MeuTST<Long> st) {
+        StdOut.println(st.n + " elementos.");
+        for (String key : st.keys()) {
+            StdOut.println(key + " : " + st.get(key));
+        }
+    }
 
-        // build symbol table from standard input
+    private static void testDelete() {
         MeuTST<Long> st = new MeuTST<>();
-
         Scanner scanner = new Scanner(System.in);
 
-        while(scanner.hasNext()){
+        while (scanner.hasNext()) {
             String[] valString = scanner.nextLine().trim().split("\t");
 
-            if(valString.length == 2){
+            if (valString.length == 2) {
                 st.put(valString[1], Long.parseLong(valString[0]));
             }
         }
 
         scanner.close();
 
-        StdOut.println("keysWithPrefix(\"Seo\"):");
-        for (String s : st.keysWithPrefix("Seo"))
-            StdOut.println(s + " : " + st.get(s));
-
-        StdOut.println();
+        st.printKeys(st);
         StdOut.println();
         StdOut.println();
 
-        StdOut.println("keysWithPrefixByValue(\"Seo\"):");
-        for (String s : st.keysWithPrefixByValue("Seo"))
-            StdOut.println(s + " : " + st.get(s));
+        st.delete("sea");
+        st.printKeys(st);
         StdOut.println();
+        StdOut.println();
+
+        st.delete("sea");
+        st.printKeys(st);
+        StdOut.println();
+        StdOut.println();
+
+        st.delete("are");
+        st.delete("the");
+        st.delete("by");
+        st.printKeys(st);
+        StdOut.println();
+        StdOut.println();
+
+        st.delete("sells");
+        st.delete("she");
+        st.delete("shells");
+        st.delete("shore");
+        st.printKeys(st);
+        StdOut.println();
+        StdOut.println();
+
+        st.delete("sur");
+        st.delete("surely");
+        st.printKeys(st);
+        StdOut.println();
+        StdOut.println();
+    }
+
+    private static void testKeysWithPrefixByValue_Long() {
+        // build symbol table from standard input
+        MeuTST<Long> st = new MeuTST<>();
+
+        Scanner scanner = new Scanner(System.in);
+
+        while (scanner.hasNext()) {
+            String[] valString = scanner.nextLine().trim().split("\t");
+
+            if (valString.length == 2) {
+                st.put(valString[1], Long.parseLong(valString[0]));
+            }
+        }
+
+        scanner.close();
+
+        String key = "all";
+
+        StdOut.println("keysWithPrefix:");
+        for (String s : st.keysWithPrefix(key))
+            StdOut.println(s);
+
+        StdOut.println("keysWithPrefixByValue:");
+        for (String s : st.keysWithPrefixByValue(key))
+            StdOut.println(s);
+        StdOut.println();
+    }
+
+
+    /**
+     * Unit tests the {@code TST} data type.
+     *
+     * @param args the command-line arguments
+     */
+    public static void main(String[] args) {
+        //testDelete();
+        testKeysWithPrefixByValue_Long();
     }
 }
