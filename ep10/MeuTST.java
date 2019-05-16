@@ -91,13 +91,11 @@ public class MeuTST<Value extends Comparable<Value>> {
         private Value val;                     // value associated with string
     }
 
-    private static class KeyVal{
-        private String key;
-        private long val;
-
-        public KeyVal(String key, long val) {
-            this.key = key;
-            this.val = val;
+    private class SortStringsByValue implements Comparator<String> {
+        public int compare(String s, String r) {
+            Value sVal = get(s);
+            Value rVal = get(r);
+            return rVal.compareTo(sVal);
         }
     }
 
