@@ -47,6 +47,14 @@
 
 struct bag {
 	int n;
+	struct node* first; 
+	struct node* lastNodeReturned;
+};
+
+struct node {
+	void* item;
+	size_t nItem;
+	struct node* next;
 };
 
 /*------------------------------------------------------------*/
@@ -63,9 +71,10 @@ struct bag {
  * 
  */
 Bag
-newBag()
-{
-    return NULL;
+newBag() {
+	Bag emptyBag = emalloc(sizeof(struct bag));
+	emptyBag->n = 0;
+  return emptyBag;
 }
 
 /*-----------------------------------------------------------*/
@@ -77,8 +86,7 @@ newBag()
  *
  */
 void  
-freeBag(Bag bag)
-{
+freeBag(Bag bag) {
 }    
 
 /*------------------------------------------------------------*/
@@ -97,9 +105,19 @@ freeBag(Bag bag)
  *
  */
 void  
-add(Bag bag, const void *item, size_t nItem)
-{
-}    
+add(Bag bag, const void *item, size_t nItem) {
+	struct node* newNode = emalloc(sizeof(struct node));
+
+	void* itemClone = emalloc(nItem);
+	memcpy(itemClone, item, nItem);
+	newNode->item = itemClone;
+	newNode->nItem = nItem;
+
+	struct node* oldFirst = bag->first;
+	bag->first = newNode;
+	bag->first->next = oldFirst;
+	bag->n++;
+}
 
 /*-----------------------------------------------------------*/
 /* 
@@ -110,9 +128,8 @@ add(Bag bag, const void *item, size_t nItem)
  *  RETORNA o número de itens em BAG.
  */
 int
-size(Bag bag)
-{
-    return 0;
+size(Bag bag) {
+  return bag->n;
 }
 
 /*-----------------------------------------------------------*/
@@ -125,9 +142,8 @@ size(Bag bag)
  *
  */
 Bool
-isEmpty(Bag bag)
-{
-    return TRUE;
+isEmpty(Bag bag) {
+  return bag->n == 0;
 }
 
 /*-----------------------------------------------------------*/
@@ -143,10 +159,30 @@ isEmpty(Bag bag)
  *  Se entre duas chamadas de ITENS() a BAG é alterada, o comportamento é  indefinido. 
  *  
  */
-void * 
-itens(Bag bag, Bool init)
-{
-    return NULL;
+void *
+itens(Bag bag, Bool init) {
+  if(isEmpty(bag)){
+  	return NULL;
+  }
+
+  if(init){
+  	void* itemClone = emalloc(bag->first->nItem);
+  	memcpy(itemClone, bag->first->item, bag->first->nItem);
+
+  	bag->lastNodeReturned = bag->first;
+  	return itemClone;
+  }
+
+  struct node* currentNode = bag->lastNodeReturned->next;
+ 	if(currentNode == NULL){
+ 		return NULL;
+ 	}
+
+ 	void* itemClone = emalloc(currentNode->nItem);
+ 	memcpy(itemClone, currentNode->item, currentNode->nItem);
+
+ 	bag->lastNodeReturned = currentNode;
+ 	return itemClone;
 }
 
 /*------------------------------------------------------------*/
