@@ -55,6 +55,7 @@ struct node {
 	void* item;
 	size_t nItem;
 	struct node* next;
+	struct node* prev;
 };
 
 /*------------------------------------------------------------*/
@@ -72,7 +73,7 @@ struct node {
  */
 Bag
 newBag() {
-	Bag emptyBag = emalloc(sizeof(struct bag));
+	Bag emptyBag = ecalloc(1, sizeof(struct bag));
 	emptyBag->n = 0;
   return emptyBag;
 }
@@ -87,6 +88,20 @@ newBag() {
  */
 void  
 freeBag(Bag bag) {
+	struct node* currentNode = bag->first;
+	while(currentNode->next != NULL){
+		currentNode = currentNode->next;
+	}
+	//invariante: currentNode é o último nó da lista
+
+	while(currentNode != NULL){
+		struct node* prevNode = currentNode->prev;
+		free(currentNode->item);
+		free(currentNode);
+		currentNode = prevNode;
+	}
+
+	free(bag);
 }    
 
 /*------------------------------------------------------------*/
@@ -106,7 +121,7 @@ freeBag(Bag bag) {
  */
 void  
 add(Bag bag, const void *item, size_t nItem) {
-	struct node* newNode = emalloc(sizeof(struct node));
+	struct node* newNode = ecalloc(1, sizeof(struct node));
 
 	void* itemClone = emalloc(nItem);
 	memcpy(itemClone, item, nItem);
@@ -114,8 +129,14 @@ add(Bag bag, const void *item, size_t nItem) {
 	newNode->nItem = nItem;
 
 	struct node* oldFirst = bag->first;
+	if(!isEmpty(bag)){
+		bag->first->prev = newNode;
+	}
+
 	bag->first = newNode;
 	bag->first->next = oldFirst;
+	bag->first->prev = NULL;
+
 	bag->n++;
 }
 
