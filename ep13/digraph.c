@@ -356,9 +356,22 @@ inDegree(Digraph G, vertex v) {
  *  toString() da classe Digraph do algs4.
  */
 String
-toString(Digraph G)
-{
-    return NULL;
+toString(Digraph G) {
+    int LEN = G->V * G->V * 100 + 1000;
+    char* stringGraph = emalloc(LEN*sizeof(char)); 
+
+    char buffer[50];
+    snprintf(buffer, "%d\n%d\n", G->V, G->E);
+    strcat(stringGraph, buffer);
+
+    for(int v = 0; v < G->V; v++){
+        for(int w = 0; w < G->adj[v]->size; w++){
+            snprintf(buffer, "%d %d\n", v, w);
+            strcat(stringGraph, buffer);
+        }
+    }
+
+    return stringGraph;
 }
 
 /*------------------------------------------------------------*/
