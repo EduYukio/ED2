@@ -179,7 +179,7 @@ reverseDigraph(Digraph G) {
     Digraph reverseGraph = newDigraph(V);
 
     for(int v = 0; v < V; v++){
-        for(int w = 0; w < G->adj[v]->size; w++){
+        for(int w = 0; w < size(G->adj[v]); w++){
             addEdge(reverseGraph, w, v);
         }
     }
@@ -206,17 +206,17 @@ readDigraph(String nomeArq) {
     fp = fopen(nomeArq, "r");
     if (fp == NULL) {
         printf ("Error creating file\n");
-        return -1;
+        return NULL;
     }
 
     String line = getLine(fp);
     if(line == NULL){
         printf ("File is empty\n");
-        return -1;
+        return NULL;
     }
 
     Digraph newGraph = newDigraph(atoi(line));
-    String line = getLine(fp);
+    line = getLine(fp);
     int E = atoi(line);
     for(int i = 0; i < E; i++){
         line = getLine(fp);
@@ -327,7 +327,7 @@ adj(Digraph G, vertex v, Bool init) {
  */
 int
 outDegree(Digraph G, vertex v) {
-    return G->adj[v]->n;
+    return size(G->adj[v]);
 }
 
 /*-----------------------------------------------------------*/
@@ -340,7 +340,7 @@ outDegree(Digraph G, vertex v) {
  */
 int
 inDegree(Digraph G, vertex v) {
-    return G->indegree[v];
+    return *G->indegree[v];
 }
 
 
