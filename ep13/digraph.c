@@ -96,8 +96,10 @@
  * 
  * Implementação com vetor de listas de adjacência.
  */
-struct digraph 
-{
+struct digraph {
+   int V; //numero de vertices
+   int E; //numero de arestas
+   Bag* adj; // ponteiro para o vetor de listas, representadas por bags
 };
 
 /*------------------------------------------------------------*/
@@ -115,9 +117,13 @@ struct digraph
  * 
  */
 Digraph
-newDigraph(int V)
-{
-    return NULL;
+newDigraph(int V) {
+    Digraph emptyGraph = ecalloc(1, sizeof(Digraph));
+    emptyGraph->V = V;
+    emptyGraph->E = 0;
+    emptyGraph->adj = ecalloc(V, sizeof(Bag));
+
+    return emptyGraph;
 }
 
 /*-----------------------------------------------------------*/
