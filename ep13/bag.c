@@ -163,7 +163,7 @@ isEmpty(Bag bag) {
 vertex 
 itens(Bag bag, Bool init) {
 	if(isEmpty(bag)){
-		return NULL;
+		return -1;
 	}
 
 	if(init){
@@ -174,7 +174,7 @@ itens(Bag bag, Bool init) {
 
 	struct node* currentNode = bag->lastNodeReturned->next;
  	if(currentNode == NULL){
- 		return NULL;
+ 		return -1;
  	}
 
 	vertex currentItem = currentNode->item;

@@ -314,7 +314,7 @@ addEdge(Digraph G, vertex v, vertex w) {
  */
 int 
 adj(Digraph G, vertex v, Bool init) {
-    return -1;
+    return itens(G->adj[v], init);
 }
 
 /*-----------------------------------------------------------*/
