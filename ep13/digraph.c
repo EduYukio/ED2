@@ -361,14 +361,21 @@ toString(Digraph G) {
     char* stringGraph = emalloc(LEN*sizeof(char)); 
 
     char buffer[50];
-    snprintf(buffer, "%d\n%d\n", G->V, G->E);
+    snprintf(buffer, 50, "%d vertices, %d edges\n", G->V, G->E);
     strcat(stringGraph, buffer);
 
     for(int v = 0; v < G->V; v++){
-        for(int w = 0; w < G->adj[v]->size; w++){
-            snprintf(buffer, "%d %d\n", v, w);
+        snprintf(buffer, 50, "%d: ", v);
+        strcat(stringGraph, buffer);
+
+        Bag currBag = G->adj[v];
+        vertex currItem = itens(currBag, TRUE);
+        while(currItem >= 0) {
+            snprintf(buffer, 50, "%d ", currItem);
             strcat(stringGraph, buffer);
+            currItem = itens(currBag, FALSE);
         }
+        strcat(stringGraph, "\n");
     }
 
     return stringGraph;
