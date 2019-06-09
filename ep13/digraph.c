@@ -142,9 +142,25 @@ newDigraph(int V) {
  * 
  */
 Digraph
-cloneDigraph(Digraph G)
-{
-    return NULL;
+cloneDigraph(Digraph G) {
+    int V = G->V;
+    Digraph cloneGraph = newDigraph(V);
+
+    // Bag bagClone = emalloc(sizeof(Bag));
+    // memcpy(adjClone, G->adj, V*sizeof(Bag));
+    // cloneGraph->adj = adjClone;
+
+    // int** indegreeClone = emalloc(V*sizeof(int*));
+    // memcpy(indegreeClone, G->indegree, V*sizeof(int*));
+    // cloneGraph->indegreeClone = indegree;
+
+    for(int i = 0; i < V; i++){
+        for(int j = 0; j < G->adj[i]->size; j++){
+            addEdge(cloneGraph, i, j);
+        }
+    }
+
+    return cloneGraph;
 }
 
 /*-----------------------------------------------------------*/
