@@ -100,6 +100,7 @@ struct digraph {
    int V; //numero de vertices
    int E; //numero de arestas
    Bag* adj; // ponteiro para o vetor de listas, representadas por bags
+   int** indegree; // lista de lista de inteiros, indegree[v] = leque de entrada do vértice v
 };
 
 /*------------------------------------------------------------*/
@@ -121,9 +122,12 @@ newDigraph(int V) {
     Digraph emptyGraph = ecalloc(1, sizeof(Digraph));
     emptyGraph->V = V;
     emptyGraph->E = 0;
+
     emptyGraph->adj = ecalloc(V, sizeof(Bag));
+    emptyGraph->indegree = ecalloc(V, sizeof(int*));
     for(int i = 0; i < V; i++){
-        adj[i] = newBag();
+        emptyGraph->adj[i] = newBag();
+        emptyGraph->indegree[i] = ecalloc(1, sizeof(int));
     }
 
     return emptyGraph;
@@ -263,6 +267,7 @@ eDigraph(Digraph G) {
 void  
 addEdge(Digraph G, vertex v, vertex w) {
     add(G->adj[v], w);
+    G->indegree[w]++;
     G->E++;
 }    
 
@@ -310,9 +315,8 @@ outDegree(Digraph G, vertex v) {
  *
  */
 int
-inDegree(Digraph G, vertex v)
-{
-    return -1;
+inDegree(Digraph G, vertex v) {
+    return G->indegree[v];
 }
 
 
