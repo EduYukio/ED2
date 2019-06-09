@@ -264,8 +264,9 @@ eDigraph(Digraph G)
  *
  */
 void  
-addEdge(Digraph G, vertex v, vertex w)
-{
+addEdge(Digraph G, vertex v, vertex w) {
+    add(G->adj[v], w);
+    G->E++;
 }    
 
 
