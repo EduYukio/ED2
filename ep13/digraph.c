@@ -173,9 +173,34 @@ reverseDigraph(Digraph G)
  * 
  */
 Digraph
-readDigraph(String nomeArq)
-{
-    return NULL;
+readDigraph(String nomeArq) {
+    FILE *fp;
+    fp = fopen(nomeArq, "r");
+    if (fp == NULL) {
+        printf ("Error creating file\n");
+        return -1;
+    }
+
+    String line = getLine(fp);
+    if(line == NULL){
+        printf ("File is empty\n");
+        return -1;
+    }
+
+    Digraph newGraph = newDigraph(atoi(line));
+    String line = getLine(fp);
+    int E = atoi(line);
+    for(int i = 0; i < E; i++){
+        line = getLine(fp);
+        char* vStr = strtok(line, " ");
+        // nao sei se pode dar ruim se tiver mais de 
+        // um espaço, *** TEM QUE VER ***
+        char* wStr = strtok(NULL, " ");
+        addEdge(newGraph, atoi(vStr), atoi(wStr));
+    }
+
+    fclose(fp);
+    return newGraph;
 }
 
 
