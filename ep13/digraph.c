@@ -122,6 +122,9 @@ newDigraph(int V) {
     emptyGraph->V = V;
     emptyGraph->E = 0;
     emptyGraph->adj = ecalloc(V, sizeof(Bag));
+    for(int i = 0; i < V; i++){
+        adj[i] = newBag();
+    }
 
     return emptyGraph;
 }
