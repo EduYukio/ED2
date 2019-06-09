@@ -57,7 +57,7 @@ struct node {
  */
 Bag
 newBag() {
-	Bag emptyBag = ecalloc(1, sizeof(struct bag));
+	Bag emptyBag = ecalloc(1, sizeof(Bag));
 	emptyBag->n = 0;
 	return emptyBag;
 }
