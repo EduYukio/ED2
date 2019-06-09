@@ -236,10 +236,8 @@ freeDigraph(Digraph G)
  *
  */
 int
-vDigraph(Digraph G)
-{
-    return -1;
-    
+vDigraph(Digraph G) {
+    return G->V;
 }
 
 /*-----------------------------------------------------------*/
@@ -250,9 +248,8 @@ vDigraph(Digraph G)
  *
  */
 int
-eDigraph(Digraph G)
-{
-    return -1;
+eDigraph(Digraph G) {
+    return G->E;
 }
 
 /*-----------------------------------------------------------*/
@@ -287,8 +284,7 @@ addEdge(Digraph G, vertex v, vertex w) {
  *  
  */
 int 
-adj(Digraph G, vertex v, Bool init)
-{
+adj(Digraph G, vertex v, Bool init) {
     return -1;
 }
 
@@ -301,9 +297,8 @@ adj(Digraph G, vertex v, Bool init)
  *
  */
 int
-outDegree(Digraph G, vertex v)
-{
-    return -1;
+outDegree(Digraph G, vertex v) {
+    return G->adj[v]->n;
 }
 
 /*-----------------------------------------------------------*/
