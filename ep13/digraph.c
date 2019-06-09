@@ -154,9 +154,9 @@ cloneDigraph(Digraph G) {
     // memcpy(indegreeClone, G->indegree, V*sizeof(int*));
     // cloneGraph->indegreeClone = indegree;
 
-    for(int i = 0; i < V; i++){
-        for(int j = 0; j < G->adj[i]->size; j++){
-            addEdge(cloneGraph, i, j);
+    for(int v = 0; v < V; v++){
+        for(int w = 0; w < G->adj[v]->size; w++){
+            addEdge(cloneGraph, v, w);
         }
     }
 
@@ -174,9 +174,17 @@ cloneDigraph(Digraph G) {
  * 
  */
 Digraph
-reverseDigraph(Digraph G)
-{
-    return NULL;
+reverseDigraph(Digraph G) {
+    int V = G->V;
+    Digraph reverseGraph = newDigraph(V);
+
+    for(int v = 0; v < V; v++){
+        for(int w = 0; w < G->adj[v]->size; w++){
+            addEdge(reverseGraph, w, v);
+        }
+    }
+
+    return reverseGraph;
 }
 
 /*-----------------------------------------------------------*/
