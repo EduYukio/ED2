@@ -155,8 +155,11 @@ cloneDigraph(Digraph G) {
     // cloneGraph->indegreeClone = indegree;
 
     for(int v = 0; v < V; v++){
-        for(int w = 0; w < G->adj[v]->size; w++){
-            addEdge(cloneGraph, v, w);
+        Bag currBag = G->adj[v];
+        vertex currItem = itens(currBag, TRUE);
+        while(currItem >= 0) {
+            addEdge(cloneGraph, v, currItem);
+            currItem = itens(currBag, FALSE);
         }
     }
 
