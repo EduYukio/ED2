@@ -57,7 +57,7 @@ struct node {
  */
 Bag
 newBag() {
-	Bag emptyBag = ecalloc(1, sizeof(Bag));
+	Bag emptyBag = ecalloc(1, sizeof(struct bag));
 	emptyBag->n = 0;
 	return emptyBag;
 }
@@ -73,17 +73,18 @@ newBag() {
 void
 freeBag(Bag bag) {
 	struct node* currentNode = bag->first;
-	while(currentNode->next != NULL){
-		currentNode = currentNode->next;
-	}
-	//invariante: currentNode é o último nó da lista
+	if(currentNode != NULL){
+		while(currentNode->next != NULL){
+			currentNode = currentNode->next;
+		}
+		//invariante: currentNode é o último nó da lista
 
-	while(currentNode != NULL){
-		struct node* prevNode = currentNode->prev;
-		free(currentNode);
-		currentNode = prevNode;
+		while(currentNode != NULL){
+			struct node* prevNode = currentNode->prev;
+			free(currentNode);
+			currentNode = prevNode;
+		}
 	}
-
 	free(bag);
 }	
 
