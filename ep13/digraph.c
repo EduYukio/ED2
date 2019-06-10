@@ -174,8 +174,11 @@ reverseDigraph(Digraph G) {
     Digraph reverseGraph = newDigraph(V);
 
     for(int v = 0; v < V; v++){
-        for(int w = 0; w < size(G->adj[v]); w++){
-            addEdge(reverseGraph, w, v);
+        Bag currBag = G->adj[v];
+        vertex currItem = itens(currBag, TRUE);
+        while(currItem >= 0) {
+            addEdge(reverseGraph, currItem, v);
+            currItem = itens(currBag, FALSE);
         }
     }
 
