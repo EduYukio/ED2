@@ -208,8 +208,8 @@ readDigraph(String nomeArq) {
         return NULL;
     }
 
-    char* line = ecalloc(50, sizeof(char));
-    fgets(line, 50, fp);
+    char* line = ecalloc(20, sizeof(char));
+    fgets(line, 20, fp);
 
     if(line == NULL){
         printf ("File is empty\n");
@@ -217,12 +217,12 @@ readDigraph(String nomeArq) {
     }
 
     Digraph newGraph = newDigraph(atoi(line));
-    fgets(line, 50, fp);
+    fgets(line, 20, fp);
 
     int E = atoi(line);
     
     for(int i = 0; i < E; i++){
-        fgets(line, 50, fp);
+        fgets(line, 20, fp);
         char* vStr = strtok(line, " ");
         char* wStr = strtok(NULL, " ");
         addEdge(newGraph, atoi(vStr), atoi(wStr));
