@@ -100,7 +100,7 @@ struct digraph {
    int V; //numero de vertices
    int E; //numero de arestas
    Bag* adj; // ponteiro para o vetor de listas, representadas por bags
-   int** indegree; // lista de lista de inteiros, indegree[v] = leque de entrada do vértice v
+   int* indegree; // lista de lista de inteiros, indegree[v] = leque de entrada do vértice v
 };
 
 /*------------------------------------------------------------*/
@@ -119,15 +119,14 @@ struct digraph {
  */
 Digraph
 newDigraph(int V) {
-    Digraph emptyGraph = ecalloc(1, sizeof(Digraph));
+    Digraph emptyGraph = ecalloc(1, sizeof(struct digraph));
     emptyGraph->V = V;
     emptyGraph->E = 0;
 
     emptyGraph->adj = ecalloc(V, sizeof(Bag));
-    emptyGraph->indegree = ecalloc(V, sizeof(int*));
+    emptyGraph->indegree = ecalloc(V, sizeof(int));
     for(int i = 0; i < V; i++){
         emptyGraph->adj[i] = newBag();
-        emptyGraph->indegree[i] = ecalloc(1, sizeof(int));
     }
 
     return emptyGraph;
@@ -143,16 +142,19 @@ newDigraph(int V) {
  */
 Digraph
 cloneDigraph(Digraph G) {
-    int V = G->V;
-    Digraph cloneGraph = newDigraph(V);
+    Digraph cloneGraph = newDigraph(G->V);
 
-    for(int v = 0; v < V; v++){
+    for(int v = 0; v < G->V; v++){
         Bag currBag = G->adj[v];
         vertex currItem = itens(currBag, TRUE);
         while(currItem >= 0) {
             addEdge(cloneGraph, v, currItem);
             currItem = itens(currBag, FALSE);
         }
+    }
+
+    for (int i = 0; i < G->V; i++){
+        cloneGraph->indegree[i] = G->indegree[i];
     }
 
     return cloneGraph;
@@ -170,10 +172,9 @@ cloneDigraph(Digraph G) {
  */
 Digraph
 reverseDigraph(Digraph G) {
-    int V = G->V;
-    Digraph reverseGraph = newDigraph(V);
+    Digraph reverseGraph = newDigraph(G->V);
 
-    for(int v = 0; v < V; v++){
+    for(int v = 0; v < G->V; v++){
         Bag currBag = G->adj[v];
         vertex currItem = itens(currBag, TRUE);
         while(currItem >= 0) {
@@ -214,8 +215,12 @@ readDigraph(String nomeArq) {
     }
 
     Digraph newGraph = newDigraph(atoi(line));
+    free(line);
+
     line = getLine(fp);
     int E = atoi(line);
+    free(line);
+    
     for(int i = 0; i < E; i++){
         line = getLine(fp);
         char* vStr = strtok(line, " ");
@@ -223,6 +228,7 @@ readDigraph(String nomeArq) {
         // um espaço, *** TEM QUE VER ***
         char* wStr = strtok(NULL, " ");
         addEdge(newGraph, atoi(vStr), atoi(wStr));
+        free(line);
     }
 
     fclose(fp);
@@ -239,8 +245,13 @@ readDigraph(String nomeArq) {
  *
  */
 void  
-freeDigraph(Digraph G)
-{
+freeDigraph(Digraph G) {
+    for(int i = 0; i < G->V; i++){
+        freeBag(G->adj[i]);
+    }
+    free(G->indegree);
+    free(G->adj);
+    free(G);
 }    
 
 /*------------------------------------------------------------*/
@@ -338,7 +349,7 @@ outDegree(Digraph G, vertex v) {
  */
 int
 inDegree(Digraph G, vertex v) {
-    return *G->indegree[v];
+    return G->indegree[v];
 }
 
 
@@ -353,30 +364,34 @@ inDegree(Digraph G, vertex v) {
  *  Sigestão: para fazer esta função inspire-se no método 
  *  toString() da classe Digraph do algs4.
  */
+
 String
 toString(Digraph G) {
-    int LEN = G->V * G->V * 100 + 1000;
-    char* stringGraph = emalloc(LEN*sizeof(char)); 
+    int LEN = G->V * G->V * 10;
+    char* stringGraph = ecalloc(LEN, sizeof(char)); 
 
-    char buffer[50];
-    snprintf(buffer, 50, "%d vertices, %d edges\n", G->V, G->E);
+    char buffer[45];
+    snprintf(buffer, sizeof(buffer), "%d vertices, %d edges\n", G->V, G->E);
     strcat(stringGraph, buffer);
 
     for(int v = 0; v < G->V; v++){
-        snprintf(buffer, 50, "%d: ", v);
+        snprintf(buffer, sizeof(buffer), "%d: ", v);
         strcat(stringGraph, buffer);
 
         Bag currBag = G->adj[v];
         vertex currItem = itens(currBag, TRUE);
         while(currItem >= 0) {
-            snprintf(buffer, 50, "%d ", currItem);
+            snprintf(buffer, sizeof(buffer), "%d ", currItem);
             strcat(stringGraph, buffer);
             currItem = itens(currBag, FALSE);
         }
         strcat(stringGraph, "\n");
     }
 
-    return stringGraph;
+    char* smallerStringGraph = copyString(stringGraph);
+    free(stringGraph);
+
+    return smallerStringGraph;
 }
 
 /*------------------------------------------------------------*/
