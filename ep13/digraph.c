@@ -208,29 +208,27 @@ readDigraph(String nomeArq) {
         return NULL;
     }
 
-    String line = getLine(fp);
+    char* line = ecalloc(50, sizeof(char));
+    fgets(line, 50, fp);
+
     if(line == NULL){
         printf ("File is empty\n");
         return NULL;
     }
 
     Digraph newGraph = newDigraph(atoi(line));
-    free(line);
+    fgets(line, 50, fp);
 
-    line = getLine(fp);
     int E = atoi(line);
-    free(line);
     
     for(int i = 0; i < E; i++){
-        line = getLine(fp);
+        fgets(line, 50, fp);
         char* vStr = strtok(line, " ");
-        // nao sei se pode dar ruim se tiver mais de 
-        // um espaço, *** TEM QUE VER ***
         char* wStr = strtok(NULL, " ");
         addEdge(newGraph, atoi(vStr), atoi(wStr));
-        free(line);
     }
 
+    free(line);
     fclose(fp);
     return newGraph;
 }
@@ -367,13 +365,12 @@ inDegree(Digraph G, vertex v) {
 
 String
 toString(Digraph G) {
-    int LEN = G->V * G->V * 10;
+    int LEN = G->V * G->V * 50;
     char* stringGraph = ecalloc(LEN, sizeof(char)); 
 
     char buffer[45];
     snprintf(buffer, sizeof(buffer), "%d vertices, %d edges\n", G->V, G->E);
     strcat(stringGraph, buffer);
-
     for(int v = 0; v < G->V; v++){
         snprintf(buffer, sizeof(buffer), "%d: ", v);
         strcat(stringGraph, buffer);
