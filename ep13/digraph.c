@@ -146,14 +146,6 @@ cloneDigraph(Digraph G) {
     int V = G->V;
     Digraph cloneGraph = newDigraph(V);
 
-    // Bag bagClone = emalloc(sizeof(Bag));
-    // memcpy(adjClone, G->adj, V*sizeof(Bag));
-    // cloneGraph->adj = adjClone;
-
-    // int** indegreeClone = emalloc(V*sizeof(int*));
-    // memcpy(indegreeClone, G->indegree, V*sizeof(int*));
-    // cloneGraph->indegreeClone = indegree;
-
     for(int v = 0; v < V; v++){
         Bag currBag = G->adj[v];
         vertex currItem = itens(currBag, TRUE);
