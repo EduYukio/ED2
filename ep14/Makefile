@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -Wall -ansi -g -O0 -pedantic -Wno-unused-result -Wno-unused-function
+CFLAGS = -Wall -std=c99 -g -O0 -pedantic -Wno-unused-result -Wno-unused-function
 RM     = rm
 OBJS   = util.o bag.o digraph.o topological.o unit_test.o
 #------------------------------------------------
