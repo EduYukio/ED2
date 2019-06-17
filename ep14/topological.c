@@ -66,8 +66,33 @@
  * Estrutura básica de um Topological
  * 
  */
-struct topological 
-{
+struct topological {
+    Bool* onStack;
+    Bool* marked;
+    int* edgeTo;
+    Bag cycle;
+    
+    //int* rank;
+    //int* topo;
+};
+
+struct digraph {
+   int V; //numero de vertices
+   int E; //numero de arestas
+   Bag* adj; // ponteiro para o vetor de listas, representadas por bags
+   int* indegree; // lista de lista de inteiros, indegree[v] = leque de entrada do vértice v
+};
+
+struct bag {
+    int n;
+    struct node* first; 
+    struct node* lastNodeReturned;
+};
+
+struct node {
+    vertex item;
+    struct node* next;
+    struct node* prev;
 };
 
 /*------------------------------------------------------------*/
@@ -76,6 +101,7 @@ struct topological
  * 
  */
 
+static void dfsCheckCycle(Topological ts, Digraph G, int v);
 /*-----------------------------------------------------------*/
 /*
  *  newTopologica(G)
@@ -85,9 +111,22 @@ struct topological
  * 
  */
 Topological
-newTopological(Digraph G)
-{
-    return NULL;
+newTopological(Digraph G) {
+    Topological newTopo = ecalloc(1, sizeof(struct topological));
+
+    int V = G->V;
+    newTopo->marked = ecalloc(V, sizeof(Bool));
+    newTopo->onStack = ecalloc(V, sizeof(Bool));
+    newTopo->edgeTo = ecalloc(V, sizeof(int));
+    newTopo->cycle = newBag();
+
+    for (int v = 0; v < V; v++) {
+        if (!newTopo->marked[v] && newTopo->cycle->n == 0) {
+            dfsCheckCycle(newTopo, G, v);
+        }
+    }
+    
+    return newTopo;
 }
 
 /*-----------------------------------------------------------*/
@@ -119,9 +158,35 @@ freeTopological(Topological ts)
  *
  */
 Bool
-hasCycle(Topological ts)
-{
-    return FALSE;
+hasCycle(Topological ts) {
+    return ts->cycle->n != 0;
+}
+
+static void dfsCheckCycle(Topological ts, Digraph G, int v) {
+    ts->onStack[v] = TRUE;
+    ts->marked[v] = TRUE;
+
+    Bag vAdj = G->adj[v];
+    for (int w = itens(vAdj, TRUE); w >=0; w = itens(vAdj, FALSE)) {
+        // short circuit if directed cycle found
+        if (ts->cycle->n != 0) return;
+
+        // found new vertex, so recur
+        else if (!ts->marked[w]) {
+            ts->edgeTo[w] = v;
+            dfsCheckCycle(ts, G, w);
+        }
+
+        // trace back directed cycle
+        else if (ts->onStack[w]) {
+            for (int x = v; x != w; x = ts->edgeTo[x]) {
+                add(ts->cycle, x);
+            }
+            add(ts->cycle, w);
+            //add(ts->cycle, v);
+        }
+    }
+    ts->onStack[v] = FALSE;
 }
 
 /*-----------------------------------------------------------*/
@@ -134,9 +199,8 @@ hasCycle(Topological ts)
  *
  */
 Bool
-isDag(Topological ts)
-{
-    return FALSE;
+isDag(Topological ts) {
+    return ts->cycle->n == 0;
 }
 
 /*-----------------------------------------------------------*/
@@ -258,9 +322,11 @@ order(Topological ts, Bool init)
  *
  */
 vertex
-cycle(Topological ts, Bool init)
-{
-    return -1;
+cycle(Topological ts, Bool init) {
+    if(isDag(ts)) {
+        return -1;
+    }
+    return itens(ts->cycle, init);
 }
 
 
