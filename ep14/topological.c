@@ -68,12 +68,26 @@
  */
 struct topological {
     Bool* onStack;
+    Bool* cycMarked;
     Bool* marked;
     int* edgeTo;
     Bag cycle;
     
     //int* rank;
     //int* topo;
+
+    int preCounter;
+    int postCounter;
+    
+    int* pre;
+    int* post;
+    Bool* ordMarked;
+
+    Bag invertedPreorder;
+    Bag invertedPostorder;
+
+    Bag preorder;
+    Bag postorder;
 };
 
 struct digraph {
@@ -102,6 +116,10 @@ struct node {
  */
 
 static void dfsCheckCycle(Topological ts, Digraph G, int v);
+
+static void dfsCheckOrder(Topological ts, Digraph G, int v);
+
+static Bag createInvertedBag(Bag bag);
 /*-----------------------------------------------------------*/
 /*
  *  newTopologica(G)
@@ -115,16 +133,39 @@ newTopological(Digraph G) {
     Topological newTopo = ecalloc(1, sizeof(struct topological));
 
     int V = G->V;
-    newTopo->marked = ecalloc(V, sizeof(Bool));
+    newTopo->cycMarked = ecalloc(V, sizeof(Bool));
     newTopo->onStack = ecalloc(V, sizeof(Bool));
     newTopo->edgeTo = ecalloc(V, sizeof(int));
     newTopo->cycle = newBag();
 
     for (int v = 0; v < V; v++) {
-        if (!newTopo->marked[v] && newTopo->cycle->n == 0) {
+        if (!newTopo->cycMarked[v] &&
+        newTopo->cycle->n == 0) {
             dfsCheckCycle(newTopo, G, v);
         }
     }
+
+    newTopo->preCounter = 0;
+    newTopo->postCounter = 0;
+
+    newTopo->pre = ecalloc(V, sizeof(int));
+    newTopo->post = ecalloc(V, sizeof(int));
+    newTopo->ordMarked = ecalloc(V, sizeof(Bool));
+
+    newTopo->invertedPreorder = newBag();
+    newTopo->invertedPostorder = newBag();
+
+    for (int v = 0; v < V; v++) {
+        if (!newTopo->ordMarked[v]) {
+            dfsCheckOrder(newTopo, G, v);
+        }
+    }
+
+    newTopo->preorder = createInvertedBag(newTopo->invertedPreorder);
+    newTopo->postorder = createInvertedBag(newTopo->invertedPostorder);
+
+    freeBag(newTopo->invertedPreorder);
+    freeBag(newTopo->invertedPostorder);
     
     return newTopo;
 }
@@ -164,15 +205,15 @@ hasCycle(Topological ts) {
 
 static void dfsCheckCycle(Topological ts, Digraph G, int v) {
     ts->onStack[v] = TRUE;
-    ts->marked[v] = TRUE;
+    ts->cycMarked[v] = TRUE;
 
     Bag vAdj = G->adj[v];
-    for (int w = itens(vAdj, TRUE); w >=0; w = itens(vAdj, FALSE)) {
+    for (int w = itens(vAdj, TRUE); w >= 0; w = itens(vAdj, FALSE)) {
         // short circuit if directed cycle found
         if (ts->cycle->n != 0) return;
 
         // found new vertex, so recur
-        else if (!ts->marked[w]) {
+        else if (!ts->cycMarked[w]) {
             ts->edgeTo[w] = v;
             dfsCheckCycle(ts, G, w);
         }
@@ -213,9 +254,23 @@ isDag(Topological ts) {
  *
  */
 int
-pre(Topological ts, vertex v)
-{
-    return -1;
+pre(Topological ts, vertex v) {
+    return ts->pre[v];
+}
+
+static void dfsCheckOrder(Topological ts, Digraph G, int v) {
+    ts->ordMarked[v] = TRUE;
+    ts->pre[v] = ts->preCounter++;
+    add(ts->invertedPreorder, v);
+
+    Bag vAdj = G->adj[v];
+    for (int w = itens(vAdj, TRUE); w >= 0; w = itens(vAdj, FALSE)) {
+        if (!ts->ordMarked[w]) {
+            dfsCheckOrder(ts, G, w);
+        }
+    }
+    add(ts->invertedPostorder, v);
+    ts->post[v] = ts->postCounter++;
 }
 
 /*-----------------------------------------------------------*/
@@ -228,9 +283,8 @@ pre(Topological ts, vertex v)
  *
  */
 int
-post(Topological ts, vertex v)
-{
-    return -1;
+post(Topological ts, vertex v) {
+    return ts->post[v];
 }
 
 /*-----------------------------------------------------------*/
@@ -262,10 +316,8 @@ rank(Topological ts, vertex v)
  *                   a função retorna -1.
  */
 vertex
-preorder(Topological ts, Bool init)
-{
-    
-    return -1;
+preorder(Topological ts, Bool init) {
+    return itens(ts->preorder, init);
 }
 
 /*-----------------------------------------------------------*/
@@ -281,10 +333,8 @@ preorder(Topological ts, Bool init)
  *                   a função retorna -1.
  */
 vertex
-postorder(Topological ts, Bool init)
-{
-    
-    return -1;
+postorder(Topological ts, Bool init) {
+    return itens(ts->postorder, init);
 }
 
 /*-----------------------------------------------------------*/
@@ -336,3 +386,12 @@ cycle(Topological ts, Bool init) {
  * static.
  */
 
+static Bag createInvertedBag(Bag bag) {
+    Bag newB = newBag();
+
+    for (int v = itens(bag, TRUE); v >= 0; v = itens(bag, FALSE)) {
+        add(newB, v);
+    }
+
+    return newB;
+}   
