@@ -115,9 +115,9 @@ struct node {
  * 
  */
 
-static void dfsCheckCycle(Topological ts, Digraph G, int v);
-
 static void dfsCheckOrder(Topological ts, Digraph G, int v);
+
+static void dfsCheckCycle(Topological ts, Digraph G, int v);
 
 static Bag createInvertedBag(Bag bag);
 /*-----------------------------------------------------------*/
@@ -165,9 +165,9 @@ newTopological(Digraph G) {
     newTopo->postorder = createInvertedBag(newTopo->invertedPostorder);
 
     newTopo->rank = ecalloc(V, sizeof(int));
-    newTopo->order = newBag();
 
     if (!hasCycle(newTopo)) {
+        // freeBag(newTopo->order);
         newTopo->order = newTopo->invertedPostorder;
         int i = 0;
         for (int v = itens(newTopo->order, TRUE); v >= 0; v = itens(newTopo->order, FALSE)) {
@@ -187,8 +187,20 @@ newTopological(Digraph G) {
  *
  */
 void  
-freeTopological(Topological ts)
-{
+freeTopological(Topological ts) {
+    free(ts->rank);
+    freeBag(ts->postorder);
+    freeBag(ts->preorder);
+    freeBag(ts->invertedPostorder);
+    freeBag(ts->invertedPreorder);
+    free(ts->ordMarked);
+    free(ts->post);
+    free(ts->pre);
+    freeBag(ts->cycle);
+    free(ts->edgeTo);
+    free(ts->onStack);
+    free(ts->cycMarked);
+    free(ts);
 }    
 
 /*------------------------------------------------------------*/
@@ -209,33 +221,6 @@ freeTopological(Topological ts)
 Bool
 hasCycle(Topological ts) {
     return ts->cycle->n != 0;
-}
-
-static void dfsCheckCycle(Topological ts, Digraph G, int v) {
-    ts->onStack[v] = TRUE;
-    ts->cycMarked[v] = TRUE;
-
-    Bag vAdj = G->adj[v];
-    for (int w = itens(vAdj, TRUE); w >= 0; w = itens(vAdj, FALSE)) {
-        // short circuit if directed cycle found
-        if (ts->cycle->n != 0) return;
-
-        // found new vertex, so recur
-        else if (!ts->cycMarked[w]) {
-            ts->edgeTo[w] = v;
-            dfsCheckCycle(ts, G, w);
-        }
-
-        // trace back directed cycle
-        else if (ts->onStack[w]) {
-            for (int x = v; x != w; x = ts->edgeTo[x]) {
-                add(ts->cycle, x);
-            }
-            add(ts->cycle, w);
-            //add(ts->cycle, v);
-        }
-    }
-    ts->onStack[v] = FALSE;
 }
 
 /*-----------------------------------------------------------*/
@@ -264,21 +249,6 @@ isDag(Topological ts) {
 int
 pre(Topological ts, vertex v) {
     return ts->pre[v];
-}
-
-static void dfsCheckOrder(Topological ts, Digraph G, int v) {
-    ts->ordMarked[v] = TRUE;
-    ts->pre[v] = ts->preCounter++;
-    add(ts->invertedPreorder, v);
-
-    Bag vAdj = G->adj[v];
-    for (int w = itens(vAdj, TRUE); w >= 0; w = itens(vAdj, FALSE)) {
-        if (!ts->ordMarked[w]) {
-            dfsCheckOrder(ts, G, w);
-        }
-    }
-    add(ts->invertedPostorder, v);
-    ts->post[v] = ts->postCounter++;
 }
 
 /*-----------------------------------------------------------*/
@@ -397,6 +367,48 @@ cycle(Topological ts, Bool init) {
  * Implementaçao de funções administrativas: têm o modificador 
  * static.
  */
+
+static void dfsCheckOrder(Topological ts, Digraph G, int v) {
+    ts->ordMarked[v] = TRUE;
+    ts->pre[v] = ts->preCounter++;
+    add(ts->invertedPreorder, v);
+
+    Bag vAdj = G->adj[v];
+    for (int w = itens(vAdj, TRUE); w >= 0; w = itens(vAdj, FALSE)) {
+        if (!ts->ordMarked[w]) {
+            dfsCheckOrder(ts, G, w);
+        }
+    }
+    add(ts->invertedPostorder, v);
+    ts->post[v] = ts->postCounter++;
+}
+
+static void dfsCheckCycle(Topological ts, Digraph G, int v) {
+    ts->onStack[v] = TRUE;
+    ts->cycMarked[v] = TRUE;
+
+    Bag vAdj = G->adj[v];
+    for (int w = itens(vAdj, TRUE); w >= 0; w = itens(vAdj, FALSE)) {
+        // short circuit if directed cycle found
+        if (ts->cycle->n != 0) return;
+
+        // found new vertex, so recur
+        else if (!ts->cycMarked[w]) {
+            ts->edgeTo[w] = v;
+            dfsCheckCycle(ts, G, w);
+        }
+
+        // trace back directed cycle
+        else if (ts->onStack[w]) {
+            for (int x = v; x != w; x = ts->edgeTo[x]) {
+                add(ts->cycle, x);
+            }
+            add(ts->cycle, w);
+            //add(ts->cycle, v);
+        }
+    }
+    ts->onStack[v] = FALSE;
+}
 
 static Bag createInvertedBag(Bag bag) {
     Bag newB = newBag();
