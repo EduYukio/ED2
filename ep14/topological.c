@@ -72,9 +72,6 @@ struct topological {
     Bool* marked;
     int* edgeTo;
     Bag cycle;
-    
-    //int* rank;
-    //int* topo;
 
     int preCounter;
     int postCounter;
@@ -88,6 +85,9 @@ struct topological {
 
     Bag preorder;
     Bag postorder;
+
+    int* rank;
+    Bag order;
 };
 
 struct digraph {
@@ -164,8 +164,16 @@ newTopological(Digraph G) {
     newTopo->preorder = createInvertedBag(newTopo->invertedPreorder);
     newTopo->postorder = createInvertedBag(newTopo->invertedPostorder);
 
-    freeBag(newTopo->invertedPreorder);
-    freeBag(newTopo->invertedPostorder);
+    newTopo->rank = ecalloc(V, sizeof(int));
+    newTopo->order = newBag();
+
+    if (!hasCycle(newTopo)) {
+        newTopo->order = newTopo->invertedPostorder;
+        int i = 0;
+        for (int v = itens(newTopo->order, TRUE); v >= 0; v = itens(newTopo->order, FALSE)) {
+            newTopo->rank[v] = i++;
+        }
+    }
     
     return newTopo;
 }
@@ -298,9 +306,11 @@ post(Topological ts, vertex v) {
  *
  */
 int
-rank(Topological ts, vertex v)
-{
-    return -1;
+rank(Topological ts, vertex v) {
+    if(!isDag(ts)) {
+        return -1;
+    }
+    return ts->rank[v];
 }
 
 /*-----------------------------------------------------------*/
@@ -352,9 +362,11 @@ postorder(Topological ts, Bool init) {
  *  Se o digrafo _não_ é um DAG, ORDER() RETORNA -1.
  */
 vertex
-order(Topological ts, Bool init)
-{
-    return -1;
+order(Topological ts, Bool init) {
+    if(!isDag(ts)) {
+        return -1;
+    }
+    return itens(ts->order, init);
 }
 
 /*-----------------------------------------------------------*/
