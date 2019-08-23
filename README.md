@@ -1,2 +1,2 @@
 # ED2
-My exercises for the "Algoritmos e Estruturas de Dados 2" discipline.
+Exercises for the university discipline "Algorithms and Data Structures 2".
